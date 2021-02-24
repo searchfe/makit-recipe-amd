@@ -40,11 +40,10 @@ export class DependencyAnalyzer {
                       baseUrl,
                       moduleID.parseAbsolute(this.cwd, dep.moduleID),
                       prefix, this.alias);
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  const replaced = cb ? cb(dep, node, parent) : undefined;
+                  cb && cb(dep, node, parent);
                   if (node.arguments && node.arguments[0]
-            && node.arguments[0].value
-            && node.arguments[0].value.match(/^\./) !== null) {
+                      && node.arguments[0].value
+                      && node.arguments[0].value.match(/^\./) !== null) {
                       node.arguments[0].value = dep.moduleID;
                       node.arguments[0].raw = `"${dep.moduleID}"`;
                   }
@@ -92,31 +91,6 @@ function matchRequireVariableDeclarator(node, dependencies = []) {
       && node.callee && node.callee.name === 'require')
     );
 }
-/** 判断当前node节点是否包含require VariableDeclarator 返回去除后正常的declarations */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function hasRequireDeclarations(node, dependencies = []) {
-    const notRequireDeclarations: any[] = [];
-    let hasRequire = false;
-    if (node.type === 'VariableDeclaration' && node.declarations) {
-        node.declarations.forEach(element => {
-            if (matchRequireVariableDeclarator(element, dependencies)) {
-                hasRequire = true;
-            }
-            else {
-                notRequireDeclarations.push(element);
-            }
-        });
-    }
-    if (hasRequire === false) {
-        return false;
-    }
-    return notRequireDeclarations;
-}
-/**
- * [{"type":"VariableDeclaration","declarations":[{"type":"VariableDeclarator","id":
- * {"type":"Identifier","name":"A"},"init":{"type":"CallExpression","callee":{"type":
- * "Identifier","name":"require"},"arguments":[{"type":"Literal","value":"A","raw":"'A'"}]}}],"kind":"var"}]
- */
 
 /** 从 require VariableDeclarator 节点获取依赖信息 */
 function getDependencyFromNode(node): IDependency {

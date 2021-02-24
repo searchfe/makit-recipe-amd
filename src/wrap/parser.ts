@@ -119,13 +119,7 @@ export class Parser {
                               this.root,
                               this.staticBaseUrl);
 
-                          const deps = analyzer.analysis(
-                              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                              (dep, requireNode, parent) => {
-                                  // requireNode.id.name = {type};
-                                  // console.log('analyzer', dep, requireNode);
-                              }
-                          );
+                          const deps = analyzer.analysis();
 
                           // 第二参数是依赖数组 => define("", ['require', 'exports', 'md5-file'])
                           if (node.arguments[1].elements) {
@@ -179,10 +173,6 @@ export class Parser {
                               if (node.arguments[1] && node.arguments[1].elements
                   && node.arguments[1].elements.map(e => e.value).indexOf(dep.moduleID) < 0) {
                                   node.arguments[1].elements.push({'type': 'Literal', 'value': dep.moduleID});
-                                  // factory函数的参数中推入依赖对应的变量名
-                                  // if (dep.name) {
-                                  //   node.arguments[2].params.push({ type: 'Identifier', name: dep.name });
-                                  // }
                                   this.dependences.push(dep.moduleID);
                               }
                           });
@@ -230,12 +220,6 @@ export class Parser {
                       this.parseDefine--;
                   }
               }
-              // const aa = new AsyncAnalyzer(
-              //   this.cwd,
-              //   node,
-              //   this.root,
-              // );
-              // aa.analysis();
           }
       });
       this.contents = generate(this.ast);

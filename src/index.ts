@@ -2,8 +2,7 @@
 import {Transform} from 'stream';
 import {RecipeImpl} from 'makit-plugin/utils/recipe-factory';
 import {loadFile, File} from 'makit-plugin/utils/gulp-fs';
-import {amdWrap, AliasConfig} from './wrap/index';
-import {IAmdWrap} from './wrap/hook';
+import {amdWrap, AliasConfig, IAmdWrap} from './wrap/hook';
 
 const {outputFileSync} = require('fs-extra');
 
