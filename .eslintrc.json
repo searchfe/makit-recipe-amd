@@ -192,7 +192,7 @@
     "prefer-const": "off",
     "prefer-rest-params": "error",
     "prefer-spread": "error",
-    "quote-props": ["warn", "always"],
+    "quote-props": ["off"],
     "quotes": ["error", "single"],
     "radix": "error",
     "semi": ["error", "always"],
