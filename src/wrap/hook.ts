@@ -15,7 +15,6 @@ export function amdWrap(option: IAmdWrap) {
     const projectRoot = option.projectRoot || option.baseUrl || process.cwd();
     if (option.alias) {
         option.alias.forEach(a => {
-            // console.log(111, path.resolve(projectRoot , a.path));
             alias.push({
                 'moduleId': a.moduleId,
                 'path': path.resolve(projectRoot, a.path),
@@ -43,22 +42,22 @@ export function amdWrap(option: IAmdWrap) {
             const prefix = option.prefix || '';
             const useMd5 = option.useMd5 || false;
 
-            // let location = parseBase(file.path);
             if (include(file.path, option.exclude, option.baseUrl)) {
                 // 在exlude名单中 do nothing
-                // console.log('ignore', file.path);
                 callback(null, file);
             }
             else {
                 try {
-                    const parser = new Parser(file.contents, file.path, baseUrl, prefix, alias, staticBaseUrl);
-                    parser.hook({
-                        'removeModuleId': include(file.path, option.anonymousModule, option.baseUrl),
-                        useMd5
+                    const parser = new Parser({
+                        baseUrl,
+                        prefix,
+                        alias,
+                        staticBaseUrl,
+                        useMd5,
+                        removeModuleId: filePath => include(filePath, option.anonymousModule, option.baseUrl)
                     });
-                    file.contents = Buffer.from(parser.getContent());
-                    file.moduleId = parser.getModuleId();
-                    file.dependences = parser.getDependences();
+                    const contents = parser.parse(file);
+                    file.contents = Buffer.from(contents);
                 }
                 catch (e) {
                     console.warn(`\x1B[33mWARN: ${file.path} compile error \n  |__${e.message}: \x1B[0m`);
