@@ -1,4 +1,6 @@
 import {extname, resolve} from 'path';
+import {aliasConf} from './options';
+
 /** 将相对路径转化为绝对路径 ./A ../ */
 export function parseAbsolute(
     /** 当前路径 */
@@ -56,11 +58,3 @@ export function parseJsonBase(
     return filePath;
 }
 
-export interface aliasConf {
-  /** 自定义moduleID */
-  moduleId: string;
-  /** 自定义module path */
-  path: string;
-  /** 带上别名 */
-  prefix?: boolean;
-}

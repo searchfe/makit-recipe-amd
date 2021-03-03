@@ -14,13 +14,11 @@ npm install --save-dev makit-recipe-amd
 ## Usage
 
 ```js
-import { recipeFactory } from 'makit-plugin/utils/recipe-factory';
 import { wrap } from 'makit-recipe-amd';
 
-rule('foo.js.wrap', 'foo.js', recipeFactory(wrap, {base: 'path/to/repo', alias: []}, [{
-    file: 'src/**.js',
+rule('dist/foo.js.amd-normalized', 'src/foo.js', wrap({
     baseUrl: 'src'
-}]));
+}));
 ```
 
 ## Example
@@ -44,17 +42,16 @@ define(function () {
 假设配置如下
 
 ```js
-rule('dist/foo.js.wrap', 'src/foo.js', recipeFactory(wrap, {}, [{
-    file: 'src/**.js',
+rule('dist/foo.js.amd-normalized', 'src/foo.js', wrap({
     baseUrl: 'src',
     prefix: '@my-module'
-}]));
+}));
 ```
 
 经过 `wrap` 处理后得到的产物如下
 
 ```js
-// repo/dist/foo.js.wrap
+// repo/dist/foo.js.amd-normalized
 define('@my-module/foo', ['require', '@my-module/bar'], function(require, bar) {
     var dep = require('@my-module/bar');
     console.log(dep);

@@ -3,20 +3,22 @@
 // @Last Modified by: qiansc
 // @Last Modified time: 2019-11-28 15:47:41
 import {existsSync} from 'fs';
-import {File} from 'gulp-util';
 import {basename, dirname, extname, resolve} from 'path';
 import {parseScript} from 'esprima';
-import {include} from './filter';
-import {parseAbsolute, parseBase, aliasConf} from './moduleID';
+import {include} from './utils/filter';
+import {parseAbsolute, parseBase} from './moduleID';
+import {aliasConf} from './options';
 import md5File from 'md5-file';
 
 interface ParseOptions {
-    baseUrl: string,
-    prefix: string,
-    alias?: aliasConf[],
-    staticBaseUrl?: string
-    removeModuleId?: boolean | ((filePath: string) => boolean);
-    useMd5?: any;
+    filePath: string
+    baseUrl: string
+    prefix: string
+    alias: aliasConf[]
+    staticBaseUrl: string
+    removeModuleId: (filePath: string) => boolean
+    useMd5: boolean
+    md5Exclude: string[]
 }
 
 export interface Replacement {
@@ -36,11 +38,9 @@ export class Parser {
     private readonly removeModuleId: (filePath: string) => boolean;
     private readonly useMd5: boolean = false;
     /** 要被排除的文件 */
-    private readonly md5Exclude?: string[];
-    /**
-     * 以下属性每次 parse 都会重置
-     */
-    private filePath: string;
+    private readonly md5Exclude: string[];
+    /** 文件路径 */
+    private readonly filePath: string;
     /** 根据 filePath 计算出的 md5 */
     private md5Value: string;
     /** parse 时的 cwd，为 filePath 的目录 */
@@ -53,33 +53,21 @@ export class Parser {
     private defineNodes = [] as any[];
 
     constructor(options: ParseOptions) {
+        this.filePath = options.filePath;
         this.baseUrl = options.baseUrl;
         this.prefix = options.prefix;
         this.alias = options.alias;
         this.staticBaseUrl = options.staticBaseUrl;
-        if (typeof options.removeModuleId === 'function') {
-            this.removeModuleId = options.removeModuleId;
-        }
-        else {
-            this.removeModuleId = () => !!options.removeModuleId;
-        }
-        if (typeof options.useMd5 === 'object') {
-            this.useMd5 = !!options.useMd5.useMd5;
-            // 历史遗留的拼写错误 exlude -> exclude
-            this.md5Exclude = options.useMd5.exlude;
-        }
-        else if (options.useMd5 === true) {
-            this.useMd5 = true;
-        }
+        this.useMd5 = options.useMd5;
+        this.md5Exclude = options.md5Exclude;
+        this.removeModuleId = options.removeModuleId;
     }
 
-    public parse(file: File) {
-        const contents = file.contents.toString();
-        const filePath = this.filePath = file.path;
+    public parse(contents) {
         /** 生成的ModuleId md5后缀来避免其他模块引用 @molecule/toptip2_134dfas */
-        this.md5Value = this.getMd5(filePath);
+        this.md5Value = this.getMd5(this.filePath);
         // reset
-        this.cwd = dirname(filePath);
+        this.cwd = dirname(this.filePath);
         this.replacements = [];
         this.deps = [];
         this.defineNodes = [];
@@ -158,7 +146,7 @@ export class Parser {
                 return '_' + md5File.sync(filePath.replace('.js', '.ts')).slice(0, 7);
             }
             catch (e) {
-                console.log(e);
+                // ignore error
             }
         }
 
@@ -423,6 +411,11 @@ export class Parser {
             value: rawValue
         });
     }
+}
+
+export function parse(contents: string, options) {
+    const parser = new Parser(options);
+    return parser.parse(contents);
 }
 
 function replace(contents: string, replacements: Replacement[]) {
