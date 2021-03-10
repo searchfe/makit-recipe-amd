@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/searchfe/makit-recipe-amd/compare/v1.1.0...v1.2.0) (2021-03-10)
+
+
+### Features
+
+* support makit logger ([769d48a](https://github.com/searchfe/makit-recipe-amd/commit/769d48a7f80ac21749c8d3a59278b06915810262))
+
 # [1.1.0](https://github.com/searchfe/makit-recipe-amd/compare/v1.0.0...v1.1.0) (2021-03-02)
 
 
