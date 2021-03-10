@@ -33,8 +33,6 @@
     "@semantic-release/npm": "^7.0.10",
     "@semantic-release/release-notes-generator": "^9.0.1",
     "@types/esprima": "^4.0.2",
-    "@types/fs-extra": "^9.0.7",
-    "@types/gulp-util": "^3.0.35",
     "@types/jest": "^26.0.20",
     "@types/md5-file": "^4.0.2",
     "@types/node": "^14.14.31",
@@ -50,11 +48,14 @@
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
-    "gulp-util": "^3.0.8",
     "jest": "^26.6.3",
-    "makit-plugin": "^1.10.2",
+    "makit": "^1.17.1",
     "semantic-release": "^17.3.9",
-    "ts-jest": "^26.5.1"
+    "ts-jest": "^26.5.1",
+    "typescript": "^4.2.3"
+  },
+  "peerDependencies": {
+    "makit": "^1.17.1"
   },
   "release": {
     "branch": "master",
@@ -86,5 +87,8 @@
       "html"
     ],
     "all": true
+  },
+  "dependencies": {
+    "md5-file": "^5.0.0"
   }
 }
