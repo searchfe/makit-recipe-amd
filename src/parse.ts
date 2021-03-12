@@ -423,8 +423,21 @@ function replace(contents: string, replacements: Replacement[]) {
     // 替换后的起始位置
     let index = 0;
     replacements
+        .map((v, i) => {
+            // 添加 index 记录原始顺序
+            // node v10.16.3 sort 函数入参 (a, b) 不能保证为原数组中 a 在 b 前面
+            // see https://github.com/nodejs/node/issues/24294
+            return {
+                ...v,
+                index: i
+            };
+        })
         .sort((a, b) => {
             // 按终止位置升序
+            if (a.range[1] === b.range[1]) {
+                // 在同一位置插入时，按 push into replacements 时的先后顺序依次插入
+                return a.index - b.index;
+            }
             return a.range[1] - b.range[1];
         })
         .forEach(v => {
