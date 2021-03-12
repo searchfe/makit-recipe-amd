@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/searchfe/makit-recipe-amd/compare/v1.2.0...v1.2.1) (2021-03-12)
+
+
+### Bug Fixes
+
+* sort compareFunction 入参 (a, b) 顺序与原数组中顺序不一致导致 moduleId 和依赖数组顺序颠倒 ([040a09e](https://github.com/searchfe/makit-recipe-amd/commit/040a09e05aa7fa0f7871ae2aebdb75501618f872))
+
 # [1.2.0](https://github.com/searchfe/makit-recipe-amd/compare/v1.1.0...v1.2.0) (2021-03-10)
 
 
